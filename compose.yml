@@ -1,0 +1,13 @@
+version: "3"
+services:
+  web:
+    image: "challenge:0.0.1"
+    ports:
+      - "80:8081"
+    depends_on:
+    - redis
+  redis:
+    image: "redis/redis-stack:latest"
+    ports:
+      - "6379"
+      - "8001:8001"

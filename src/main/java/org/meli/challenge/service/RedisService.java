@@ -1,4 +1,4 @@
-package org.meli.challenge;
+package org.meli.challenge.service;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
