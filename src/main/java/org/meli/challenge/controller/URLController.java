@@ -1,5 +1,7 @@
 package org.meli.challenge.controller;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.meli.challenge.exception.ManagedException;
@@ -13,10 +15,22 @@ import org.springframework.web.bind.annotation.*;
 public class URLController {
 
     private final URLService urlService;
+    private final Counter urlUsed;
+    private final Counter urlCreated;
+    private final Counter urlDeleted;
 
     @Autowired
-    public URLController(URLService urlService) {
+    public URLController(URLService urlService, MeterRegistry meterRegistry) {
         this.urlService = urlService;
+        this.urlUsed = Counter.builder("url_used")
+                .description("Cantidad de invocaciones al servicio de obtención de url largas.")
+                .register(meterRegistry);
+        this.urlCreated = Counter.builder("url_created")
+                .description("Cantidad de invocaciones al servicio de creación de url cortas.")
+                .register(meterRegistry);
+        this.urlDeleted = Counter.builder("url_deleted")
+                .description("Cantidad de invocaciones al servicio de borrado de url cortas.")
+                .register(meterRegistry);
     }
 
     /**
@@ -26,6 +40,8 @@ public class URLController {
     public void getLongURL(HttpServletResponse response, @PathVariable String shortURL) throws UnknownURLException {
         String longURL = urlService.getLongURL(shortURL);
         if (longURL != null) {
+            if(urlUsed != null)
+                urlUsed.increment();
             response.setStatus(HttpServletResponse.SC_FOUND);
             response.setHeader("Location", urlService.getLongURL(shortURL));
         } else {
@@ -41,7 +57,10 @@ public class URLController {
     @PostMapping("/api/create-short-url")
     public String createShortURL(@RequestParam String longURL) {
         // TODO Verificar retorno. Quiero que sea una url completa?
-        return urlService.getShortURL(longURL);
+        String shortURL = urlService.getShortURL(longURL);
+        if(urlCreated != null)
+            urlCreated.increment();
+        return shortURL;
     }
 
     /**
@@ -51,6 +70,8 @@ public class URLController {
     @DeleteMapping("/api/delete-short-url")
     public void deleteShortURL(@RequestParam String shortURL) {
         urlService.deleteShortURL(shortURL);
+        if(urlDeleted != null)
+            urlDeleted.increment();
     }
 
     @ExceptionHandler(Exception.class)

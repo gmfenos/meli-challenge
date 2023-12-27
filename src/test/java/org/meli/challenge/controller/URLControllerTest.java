@@ -20,7 +20,7 @@ public class URLControllerTest {
     @BeforeEach
     public void beforeEach() {
         urlServiceMock = mock(URLService.class);
-        controller = new URLController(urlServiceMock);
+        controller = new URLController(urlServiceMock, mock());
     }
 
     @Test
