@@ -22,6 +22,7 @@ Nota: Si se agrega la siguiente línea al archivo C:\Windows\System32\drivers\et
 * 127.0.0.1    me.li
 
 Hay un redis insight disponible en http://localhost:8001/ para acceder al a base de datos redis.
+Hay un prometheus disponible en http://localhost:9090 para acceder a métricas.
 
 > GET me.li/`<código-corto>`
 > * Redirige a la `<url-larga>` asociada
