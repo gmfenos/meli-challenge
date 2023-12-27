@@ -10,12 +10,11 @@
 Ejecutar levantar.bat
 
 Otra alternativa es abrir una línea de comandos sobre el directorio raíz del proyecto y ejecutar:
-* mvnw.cmd clean package
 * mvnw.cmd spring-boot:build-image
 * docker-compose up
 
 Para verificar que haya levantado correctamente:
-* localhost/actuator/health
+* localhost/api/actuator/health
 
 ### Uso
 
